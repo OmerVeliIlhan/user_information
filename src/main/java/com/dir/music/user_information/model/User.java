@@ -1,6 +1,9 @@
 package com.dir.music.user_information.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.Date;
@@ -15,21 +18,10 @@ import java.util.Date;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_name")
     private String userName;
-
-    @Column(name = "user_surname")
-    private String userSurname;
-
-    @Column(name = "email")
-    private String email;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "subscription_status")
-    private SubscriptionStatus subscriptionStatus;
 
     @Column(name = "phone_number")
     private String phoneNumber;

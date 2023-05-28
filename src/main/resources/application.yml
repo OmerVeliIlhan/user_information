@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: dir-user-service
+  config:
+    import: optional:configserver:http://{CONFIG_SERVER_USERNAME:config}:{CONFIG_SERVER_PASSWORD:config}@configserver:8080
+
+  datasource:
+    password: root
+    username: root
+    url: jdbc:mysql://localhost:3306/users
+  jpa:
+    hibernate:
+      ddl-auto: update
+  security:
+    user:
+      password: dir
+      name: dir
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+
+server:
+  port: 8081
