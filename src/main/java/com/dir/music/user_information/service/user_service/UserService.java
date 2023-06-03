@@ -1,8 +1,6 @@
 package com.dir.music.user_information.service.user_service;
 
 import com.dir.music.user_information.service.IService;
-import com.dir.music.user_information.service.auth_service.exceptions.ExpiredTokenException;
-import com.dir.music.user_information.service.auth_service.exceptions.InvalidTokenException;
 import com.dir.music.user_information.service.user_service.exception.UserAlreadyExistsException;
 import com.dir.music.user_information.service.user_service.exception.UserNotFoundException;
 import com.dir.music.user_information.service.user_service.input.UserDeleteInput;
@@ -15,12 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService extends IService {
 
-    UserProfileDTO getUserProfile(UserGetInput userGetInput) throws InvalidTokenException, ExpiredTokenException, UserNotFoundException;
+    UserProfileDTO getUserProfile(UserGetInput userGetInput) throws UserNotFoundException;
 
     UserProfileDTO createUser(UserRegisterInput userRegisterInput) throws UserAlreadyExistsException;
 
-    UserProfileDTO updateUser(UserUpdateInput userUpdateInput) throws InvalidTokenException, ExpiredTokenException, UserNotFoundException, UserAlreadyExistsException;
+    UserProfileDTO updateUser(UserUpdateInput userUpdateInput) throws UserNotFoundException, UserAlreadyExistsException;
 
-    void deleteUser(UserDeleteInput userDeleteInput) throws InvalidTokenException, ExpiredTokenException, UserNotFoundException;
+    void deleteUser(UserDeleteInput userDeleteInput) throws UserNotFoundException;
 
 }

@@ -3,11 +3,7 @@ package com.dir.music.user_information.service.user_service;
 import com.dir.music.user_information.model.User;
 import com.dir.music.user_information.repository.UserRepository;
 import com.dir.music.user_information.service.auth_service.AuthService;
-import com.dir.music.user_information.service.auth_service.exceptions.ExpiredTokenException;
-import com.dir.music.user_information.service.auth_service.exceptions.InvalidTokenException;
-import com.dir.music.user_information.service.auth_service.input.AuthServiceGetClaimsInput;
 import com.dir.music.user_information.service.auth_service.input.AuthServiceRegisterInput;
-import com.dir.music.user_information.service.auth_service.output.AuthServiceGetClaimsOutput;
 import com.dir.music.user_information.service.auth_service.output.AuthServiceRegisterOutput;
 import com.dir.music.user_information.service.user_service.exception.UserAlreadyExistsException;
 import com.dir.music.user_information.service.user_service.exception.UserNotFoundException;
@@ -34,15 +30,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileDTO getUserProfile(UserGetInput userGetInput)
-            throws InvalidTokenException, ExpiredTokenException, UserNotFoundException {
-        final AuthServiceGetClaimsOutput claims = authService
-                .getClaims(AuthServiceGetClaimsInput.builder()
-                        .token(userGetInput.getToken()).build());
+            throws UserNotFoundException {
 
         final User user = userRepository.findUserByUserName(userGetInput.getUsername())
                 .orElseThrow(UserNotFoundException::new);
 
-        if (user.getId() == claims.getSubject()) {
+        if (userGetInput.isDetailed()) {
             return UserProfileDTO.builder()
                     .userName(user.getUserName())
                     .followerCount(user.getFollowerCount())
@@ -84,17 +77,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileDTO updateUser(UserUpdateInput userUpdateInput) throws InvalidTokenException, ExpiredTokenException, UserNotFoundException, UserAlreadyExistsException {
-        final AuthServiceGetClaimsOutput claims = authService
-                .getClaims(AuthServiceGetClaimsInput.builder()
-                        .token(userUpdateInput.getToken()).build());
+    public UserProfileDTO updateUser(UserUpdateInput userUpdateInput) throws UserNotFoundException, UserAlreadyExistsException {
 
         final User user = userRepository.findUserByUserName(userUpdateInput.getUserName())
                 .orElseThrow(UserNotFoundException::new);
-
-        if (user.getId() != claims.getSubject()) {
-            throw new InvalidTokenException();
-        }
 
         if (userUpdateInput.getUserName() != null) {
             user.setUserName(userUpdateInput.getUserName());
@@ -120,17 +106,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(UserDeleteInput userDeleteInput)
-            throws InvalidTokenException, ExpiredTokenException, UserNotFoundException {
-        final AuthServiceGetClaimsOutput claims = authService
-                .getClaims(AuthServiceGetClaimsInput.builder()
-                        .token(userDeleteInput.getToken()).build());
+            throws UserNotFoundException {
 
         final User user = userRepository.findUserByUserName(userDeleteInput.getUserName())
                 .orElseThrow(UserNotFoundException::new);
-
-        if (user.getId() != claims.getSubject()) {
-            throw new InvalidTokenException();
-        }
 
         userRepository.delete(user);
     }

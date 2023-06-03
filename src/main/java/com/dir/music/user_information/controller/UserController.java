@@ -1,7 +1,5 @@
 package com.dir.music.user_information.controller;
 
-import com.dir.music.user_information.service.auth_service.exceptions.ExpiredTokenException;
-import com.dir.music.user_information.service.auth_service.exceptions.InvalidTokenException;
 import com.dir.music.user_information.service.user_service.UserServiceImpl;
 import com.dir.music.user_information.service.user_service.exception.UserAlreadyExistsException;
 import com.dir.music.user_information.service.user_service.exception.UserNotFoundException;
@@ -31,13 +29,13 @@ public class UserController {
     @GetMapping(path = "/{userName}")
     public ResponseEntity<UserProfileDTO> getUserById(
             @PathVariable("userName") String userName,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+            @RequestParam(value = "isDetailed", defaultValue = "false") boolean isDetailed
     ) {
         try {
             final UserProfileDTO userProfileDTO = userService.getUserProfile(UserGetInput.builder()
-                    .username(userName).token(token).build());
+                    .username(userName).isDetailed(isDetailed).build());
             return ResponseEntity.ok(userProfileDTO);
-        } catch (UserNotFoundException | InvalidTokenException | ExpiredTokenException e) {
+        } catch (UserNotFoundException e) {
             return handleException(e);
         }
     }
@@ -65,7 +63,7 @@ public class UserController {
                     .token(token)
                     .build());
             return ResponseEntity.ok(userProfileDTO);
-        } catch (UserAlreadyExistsException | UserNotFoundException | InvalidTokenException | ExpiredTokenException e) {
+        } catch (UserAlreadyExistsException | UserNotFoundException e) {
             return handleException(e);
         }
     }
@@ -81,7 +79,7 @@ public class UserController {
                     .token(token)
                     .build());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (UserNotFoundException | InvalidTokenException | ExpiredTokenException e) {
+        } catch (UserNotFoundException e) {
             return handleException(e);
         }
     }
@@ -93,50 +91,6 @@ public class UserController {
         if (e instanceof UserNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        if (e instanceof InvalidTokenException) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-
-//    @PutMapping(path = "{userId}")
-//    public User updateUser(@PathVariable("userId") Long id, @RequestBody User userModel) {
-//        userModel.setId(id);
-//        return userService.updateUser(userModel);
-//    }
-//
-//    @DeleteMapping(path = "{userId}")
-//    public void deleteUser(@PathVariable("userId") Long id) {
-//        userService.deleteUser(id);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public UserProfileDTO getUserProfile(@PathVariable Long id) {
-//        return userService.getUserProfile(id);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public User updateUserProfile(@PathVariable Long id, @RequestBody User newUserData) {
-//        return userService.updateUserProfile(id, newUserData);
-//    }
-//
-//    /*
-//    @Autowired
-//    private AuthService authService;
-//
-//    @PutMapping(path = "/{userId}")
-//    public ResponseEntity<User> updateUserProfile(@PathVariable("userId") Long id, @RequestBody User user, @RequestHeader("Authorization") String token) {
-//        try {
-//            boolean isTokenValid = authService.verifyToken(token);
-//            if (isTokenValid) {
-//                user.setId(id);
-//                return ResponseEntity.ok(userService.updateUserProfile(id, newUserData););
-//            } else {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//            }
-//        } catch (UnambiguousException | TokenExpiredException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//    }
-//    */
 }

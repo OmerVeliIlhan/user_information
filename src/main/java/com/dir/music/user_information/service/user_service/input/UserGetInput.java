@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserGetInput {
     private String username;
-    private String token;
+    private boolean isDetailed;
 }
