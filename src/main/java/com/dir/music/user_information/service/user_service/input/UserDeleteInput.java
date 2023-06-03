@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserDeleteInput {
-    private String userName;
-    private String token;
+    private Long userId;
 }

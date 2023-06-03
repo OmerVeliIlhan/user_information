@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserGetInput {
-    private String username;
+    private Long userId;
     private boolean isDetailed;
 }

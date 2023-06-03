@@ -16,5 +16,4 @@ public interface AuthServiceFeign {
             @RequestBody AuthServiceRegisterInput authControllerRegisterInput
     );
 
-
 }

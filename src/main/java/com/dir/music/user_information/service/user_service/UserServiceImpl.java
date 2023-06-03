@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     public UserProfileDTO getUserProfile(UserGetInput userGetInput)
             throws UserNotFoundException {
 
-        final User user = userRepository.findUserByUserName(userGetInput.getUsername())
+        final User user = userRepository.findUserById(userGetInput.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
         if (userGetInput.isDetailed()) {
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileDTO updateUser(UserUpdateInput userUpdateInput) throws UserNotFoundException, UserAlreadyExistsException {
 
-        final User user = userRepository.findUserByUserName(userUpdateInput.getUserName())
+        final User user = userRepository.findUserById(userUpdateInput.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
         if (userUpdateInput.getUserName() != null) {
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(UserDeleteInput userDeleteInput)
             throws UserNotFoundException {
 
-        final User user = userRepository.findUserByUserName(userDeleteInput.getUserName())
+        final User user = userRepository.findUserById(userDeleteInput.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
         userRepository.delete(user);

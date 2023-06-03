@@ -9,7 +9,6 @@ import com.dir.music.user_information.service.user_service.input.UserRegisterInp
 import com.dir.music.user_information.service.user_service.input.UserUpdateInput;
 import com.dir.music.user_information.service.user_service.output.UserProfileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,14 +25,14 @@ public class UserController {
     }
 
 
-    @GetMapping(path = "/{userName}")
+    @GetMapping(path = "/{userId}")
     public ResponseEntity<UserProfileDTO> getUserById(
-            @PathVariable("userName") String userName,
+            @PathVariable("userId") Long userId,
             @RequestParam(value = "isDetailed", defaultValue = "false") boolean isDetailed
     ) {
         try {
             final UserProfileDTO userProfileDTO = userService.getUserProfile(UserGetInput.builder()
-                    .username(userName).isDetailed(isDetailed).build());
+                    .userId(userId).isDetailed(isDetailed).build());
             return ResponseEntity.ok(userProfileDTO);
         } catch (UserNotFoundException e) {
             return handleException(e);
@@ -50,17 +49,16 @@ public class UserController {
         }
     }
 
-    @PutMapping(path = "/{userName}")
+    @PutMapping(path = "/{userId}")
     public ResponseEntity<UserProfileDTO> updateUser
             (@RequestBody UserRegisterInput userRegisterInput,
-             @PathVariable("userName") String userName,
-             @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+             @PathVariable("userId") Long userId) {
         try {
             final UserProfileDTO userProfileDTO = userService.updateUser(UserUpdateInput.builder()
-                    .userName(userName)
+                    .userId(userId)
+                    .userName(userRegisterInput.getUserName())
                     .phoneNumber(userRegisterInput.getPhoneNumber())
                     .dateOfBirth(userRegisterInput.getDateOfBirth())
-                    .token(token)
                     .build());
             return ResponseEntity.ok(userProfileDTO);
         } catch (UserAlreadyExistsException | UserNotFoundException e) {
@@ -68,15 +66,12 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(path = "/{username}")
+    @DeleteMapping(path = "/{userId}")
     public ResponseEntity<Object> deleteUser(
-            @PathVariable("username") String userName,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+            @PathVariable("userId") Long userId) {
         try {
-
             userService.deleteUser(UserDeleteInput.builder().
-                    userName(userName)
-                    .token(token)
+                    userId(userId)
                     .build());
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (UserNotFoundException e) {

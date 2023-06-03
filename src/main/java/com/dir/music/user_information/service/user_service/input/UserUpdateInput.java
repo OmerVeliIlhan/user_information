@@ -13,8 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class UserUpdateInput {
+    private Long userId;
     private String userName;
     private String phoneNumber;
     private Date dateOfBirth;
-    private String token;
 }
